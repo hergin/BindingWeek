@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
-using static DomainModel.Task;
+using DomainModel;
 
 namespace WebMvc.Models
 {
     public class TaskViewModel
     {
         public int Id { get; set; }
-        public string? Title { get; set; }
+        public string Title { get; set; }
         [Display(Name = "Task Content")]
-        public string? Content { get; set; }
+        public string Content { get; set; }
         [DataType(DataType.Date)]
-        public DateTime? DueDate { get; set; }
+        public DateTime DueDate { get; set; }
 
-        public static TaskViewModel FromTask(DomainModel.Task task)
+        public static TaskViewModel FromTask(MyTask task)
         {
             return new TaskViewModel
             {

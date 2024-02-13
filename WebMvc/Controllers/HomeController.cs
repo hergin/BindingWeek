@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WebMvc.Models;
-using static DomainModel.Task;
+using DomainModel;
 
 namespace WebMvc.Controllers;
 
@@ -9,20 +9,22 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    List<DomainModel.Task> tasks;
+    List<MyTask> tasks;
 
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
-        tasks = new List<DomainModel.Task>();
-        tasks.Add(new DomainModel.Task(1, "Same old", "Demo .NET", DateTime.Now.AddDays(3)));
-        tasks.Add(new DomainModel.Task(2, "Grading", "Grade some projects", DateTime.Now.AddDays(5)));
+        tasks = new List<MyTask>();
+        tasks.Add(new MyTask(1, "Same old", "Demo .NET", DateTime.Now.AddDays(3)));
+        tasks.Add(new MyTask(2, "Grading", "Grade some projects", DateTime.Now.AddDays(5)));
     }
 
     public IActionResult Index()
     {
         return View(tasks.Select(t => TaskViewModel.FromTask(t)));
     }
+
+
 
     // GET: /HelloWorld/Edit/{id}
     public IActionResult Edit([FromRoute] int id)
