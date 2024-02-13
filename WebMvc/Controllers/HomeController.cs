@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WebMvc.Models;
+using static DomainModel.Task;
 
 namespace WebMvc.Controllers;
 
@@ -8,49 +9,27 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
+    List<DomainModel.Task> tasks;
+
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
+        tasks = new List<DomainModel.Task>();
+        tasks.Add(new DomainModel.Task(1, "Same old", "Demo .NET", DateTime.Now.AddDays(3)));
+        tasks.Add(new DomainModel.Task(2, "Grading", "Grade some projects", DateTime.Now.AddDays(5)));
     }
 
     public IActionResult Index()
     {
-        var someTask = new TaskViewModel
-        {
-            Id = 1,
-            Title = "Same old",
-            Content = "Demo .NET",
-            DueDate = DateTime.Now.AddDays(3)
-        };
-        var someOtherTask = new TaskViewModel
-        {
-            Id = 2,
-            Title = "Grading",
-            Content = "Grade some project",
-            DueDate = DateTime.Now.AddDays(5)
-        };
-        return View(new List<TaskViewModel> { someTask, someOtherTask });
-
+        return View(tasks.Select(t => TaskViewModel.FromTask(t)));
     }
 
     // GET: /HelloWorld/Edit/{id}
     public IActionResult Edit([FromRoute] int id)
     {
-        var someTask = new TaskEditModel
-        {
-            Id = 1,
-            Title = "Same old",
-            Content = "Demo .NET",
-            DueDate = DateTime.Now.AddDays(3)
-        };
-        var someOtherTask = new TaskEditModel
-        {
-            Id = 2,
-            Title = "Grading",
-            Content = "Grade some project",
-            DueDate = DateTime.Now.AddDays(5)
-        };
-        return View(id == 1 ? someTask : someOtherTask);
+        var theTask = tasks.Find(t => t.Id == id);
+        var taskEditModel = TaskEditModel.FromTask(theTask);
+        return View(taskEditModel);
     }
 
     // POST: Movies/Edit/5
@@ -79,22 +58,7 @@ public class HomeController : Controller
 
     public IActionResult ViewTask([FromRoute] int id)
     {
-        var someTask = new TaskViewModel
-        {
-            Id = 1,
-            Title = "Same old",
-            Content = "Demo .NET",
-            DueDate = DateTime.Now.AddDays(3)
-        };
-        var someOtherTask = new TaskViewModel
-        {
-            Id = 2,
-            Title = "Grading",
-            Content = "Grade some project",
-            DueDate = DateTime.Now.AddDays(5)
-        };
-        return View(id == 1 ? someTask : someOtherTask);
-
+        return View(TaskViewModel.FromTask(tasks.Find(t => t.Id == id)));
     }
 
     public IActionResult Privacy()
