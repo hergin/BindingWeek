@@ -3,9 +3,9 @@
 public class MyTask
 {
     public int Id { get; }
-    public string Title { get; }
-    public string Content { get; }
-    public DateTime DueDate { get; }
+    public string Title { get; private set; }
+    public string Content { get; private set; }
+    public DateTime DueDate { get; private set; }
 
     public MyTask(int id, string title, string content)
     {
@@ -16,6 +16,13 @@ public class MyTask
 
     public MyTask(int id, string title, string content, DateTime dueDate) : this(id, title, content)
     {
+        DueDate = dueDate;
+    }
+
+    public void Update(string title, string content, DateTime dueDate)
+    {
+        Title = title;
+        Content = content;
         DueDate = dueDate;
     }
 }
