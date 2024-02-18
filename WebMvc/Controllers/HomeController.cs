@@ -48,10 +48,31 @@ public class HomeController : Controller
         }
     }
 
+    public IActionResult Create()
+    {
+        var numOfTask = taskService.GetAllTasks().Count;
+        var taskCreateModel = TaskCreateModel.AddTask(numOfTask);
+        return View(taskCreateModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(int id, [Bind("Title,Content,DueDate")] TaskCreateModel task)
+    {
+        if (ModelState.IsValid)
+        {
+            taskService.CreateTask(id, task.Title, task.Content, task.DueDate);
+            return RedirectToAction("Index");
+        }
+        else
+        {
+            return View(task);
+        }
+    }
+
     public IActionResult ViewTask([FromRoute] int id)
     {
         var theTask = taskService.FindTaskByID(id);
         return View(TaskViewModel.FromTask(theTask));
     }
-
 }
