@@ -54,4 +54,30 @@ public class HomeController : Controller
         return View(TaskViewModel.FromTask(theTask));
     }
 
+    
+    
+    
+    
+    
+    // GET: /Home/Create
+    public IActionResult Create()
+    {
+        return View();
+    }
+    
+    // POST: /Home/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(TaskCreateModel task)
+    {
+        if (ModelState.IsValid)
+        {
+            taskService.CreateTask(task.Title, task.Content, task.DueDate);
+            return RedirectToAction("Index");
+        }
+        return View();
+    }
+    
+    
+
 }
