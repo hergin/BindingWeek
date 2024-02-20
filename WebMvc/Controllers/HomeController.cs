@@ -56,12 +56,16 @@ public class HomeController : Controller
 
     public IActionResult CreateTask([Bind("Title,Content,DueDate")] TaskCreateModel task)
     {
-    if (ModelState.IsValid)
-    {
-        taskService.CreateTask(task.Title, task.Content, task.DueDate);
-        return RedirectToAction("Index");
+        if (ModelState.IsValid)
+            {// Personally I would prefer to use something like GUID, but this works better for the current setup of the app
+            int newId = taskService.GetAllTasks().Max(t => t.Id) + 1;
+            var newTask = new MyTask(newId, task.Title, task.Content, task.DueDate);
+            taskService.AddTask(newTask);
+            return RedirectToAction("Index");
+        }
+        else 
+        {
+            return View(task);
+        } 
     }
-    return View(task);
-    }
-
 }
