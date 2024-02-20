@@ -28,5 +28,11 @@ namespace WebMvc.Service
             existingTask.Update(title, content, dueDate);
         }
 
+        public void CreateTask(string title, string content, DateTime duedate)
+        {
+            int id = tasks.Count + 1;
+            tasks.Add(new MyTask(id, title, content, duedate));
+        }
+
     }
 }
