@@ -1,21 +1,20 @@
 using System.ComponentModel.DataAnnotations;
-using DomainModel;
 
 namespace WebMvc.Models {
-    public class TaskEditModel {
+    public class CreateModel {
         public int Id { 
             get; 
             set; 
         }
 
         [StringLength(60, MinimumLength = 3)]
-        public string? Title { 
-            get; set; 
-        
+        public required string Title { 
+            get; 
+            set; 
         }
 
         [Display(Name = "Task Content")]
-        public string? Content { 
+        public required string Content { 
             get; 
             set; 
         }
@@ -26,12 +25,13 @@ namespace WebMvc.Models {
             set; 
         }
 
-        public static TaskEditModel FromTask(MyTask task) {
-            return new TaskEditModel {
-                Id = task.Id,
-                Title = task.Title,
-                Content = task.Content,
-                DueDate = task.DueDate
+        public static CreateModel NewTask(int numTasks) {
+            var newTaskId = numTasks + 1;
+            return new CreateModel {
+                Id = newTaskId,
+                Title = "",
+                Content = "",
+                DueDate = DateTime.Now
             };
         }
     }

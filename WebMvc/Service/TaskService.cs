@@ -25,7 +25,19 @@ namespace WebMvc.Service
         public void UpdateTaskByID(int id, string title, string content, DateTime dueDate)
         {
             var existingTask = tasks.Find(t => t.Id == id);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             existingTask.Update(title, content, dueDate);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+        }
+
+        public int GetNumTasks()
+        {
+            return tasks.Count();
+        }
+
+        public void CreateNewTask(int id, string title, string content, DateTime dueDate)
+        {
+            tasks.Add(new MyTask(id, title, content, dueDate));
         }
 
     }
