@@ -30,21 +30,29 @@ public class HomeController : Controller
         return View(taskEditModel);
     }
 
+    // GET: /HelloWorld/Create
+    public IActionResult Create()
+    {
+        var newTaskId = taskService.GetNumTasks();
+        var taskCreateModel = TaskCreateModel.NewTask(newTaskId);
+        return View(taskCreateModel);
+    }
+
     // POST: Movies/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Title,Content,DueDate")] TaskEditModel task)
+    public Task<IActionResult> Edit(int id, [Bind("Title,Content,DueDate")] TaskEditModel task)
     {
         if (ModelState.IsValid)
         {
             taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
-            return RedirectToAction("ViewTask", new { id = id });
+            return Task.FromResult<IActionResult>(RedirectToAction("ViewTask", new {id = id}));
         }
         else
         {
-            return View(task);
+            return Task.FromResult<IActionResult>(View(task));
         }
     }
 
@@ -52,6 +60,19 @@ public class HomeController : Controller
     {
         var theTask = taskService.FindTaskByID(id);
         return View(TaskViewModel.FromTask(theTask));
+    }
+
+    // POST: Blank/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public Task<IActionResult> Create(int id, [Bind("Title,Content,DueDate")] TaskCreateModel task)
+    {
+        if (ModelState.IsValid) {
+            taskService.CreateNewTask(id, task.Title, task.Content, task.DueDate);
+            return Task.FromResult<IActionResult>(RedirectToAction("ViewTask", new { id = id }));
+        } else {
+            return Task.FromResult<IActionResult>(View(task));
+        }
     }
 
 }
