@@ -54,4 +54,21 @@ public class HomeController : Controller
         return View(TaskViewModel.FromTask(theTask));
     }
 
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create([Bind("Title,Content,DueDate")] TaskEditModel taskEditModel)
+    {
+        if (ModelState.IsValid)
+        {
+            taskService.CreateTask(taskEditModel); // Implement this method in TaskService
+            return RedirectToAction(nameof(Index));
+        }
+        return View(taskEditModel);
+    }
+
 }

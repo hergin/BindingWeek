@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DomainModel;
+using WebMvc.Models;
 namespace WebMvc.Service
 {
     public class TaskService
@@ -26,6 +27,12 @@ namespace WebMvc.Service
         {
             var existingTask = tasks.Find(t => t.Id == id);
             existingTask.Update(title, content, dueDate);
+        }
+
+        public void CreateTask(TaskEditModel model)
+        {
+            var newTask = new MyTask(tasks.Count + 1, model.Title, model.Content, model.DueDate);
+            tasks.Add(newTask);
         }
 
     }
