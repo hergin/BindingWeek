@@ -54,4 +54,39 @@ public class HomeController : Controller
         return View(TaskViewModel.FromTask(theTask));
     }
 
+    public class TaskController : Controller
+{
+    private readonly DomainModel.TaskManager _taskManager;
+
+    public TaskController(DomainModel.TaskManager taskManager)
+    {
+        _taskManager = taskManager;
+    }
+
+    // Action method for displaying the create page
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    // Action method for handling task creation
+    [HttpPost]
+    public IActionResult Create(CreateTaskModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            _taskManager.CreateTask(model.Title, model.Content, model.DueDate);
+            return RedirectToAction("Index", "Home"); // Redirect to index page after creation
+        }
+        return View(model);
+    }
+}
+
+}
+
+public class CreateTaskModel
+{
+    public string Content { get; internal set; }
+    public DateTime DueDate { get; internal set; }
+    public string Title { get; internal set; }
 }

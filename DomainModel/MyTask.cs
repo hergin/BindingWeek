@@ -1,28 +1,67 @@
-﻿namespace DomainModel;
-
-public class MyTask
+﻿namespace DomainModel
 {
-    public int Id { get; }
-    public string Title { get; private set; }
-    public string Content { get; private set; }
-    public DateTime DueDate { get; private set; }
-
-    public MyTask(int id, string title, string content)
+    public class MyTask
     {
-        Id = id;
-        Title = title;
-        Content = content;
+        public int Id { get; }
+        public string Title { get; private set; }
+        public string Content { get; private set; }
+        public DateTime DueDate { get; private set; }
+
+        public MyTask(int id, string title, string content)
+        {
+            Id = id;
+            Title = title;
+            Content = content;
+        }
+
+        public MyTask(int id, string title, string content, DateTime dueDate) : this(id, title, content)
+        {
+            DueDate = dueDate;
+        }
+
+        public MyTask(string title, string content, DateTime dueDate)
+        {
+            Title = title;
+            Content = content;
+            DueDate = dueDate;
+        }
+
+        public void Update(string title, string content, DateTime dueDate)
+        {
+            Title = title;
+            Content = content;
+            DueDate = dueDate;
+        }
     }
 
-    public MyTask(int id, string title, string content, DateTime dueDate) : this(id, title, content)
+    public class TaskManager
     {
-        DueDate = dueDate;
+        private readonly TaskRepository _taskRepository;
+
+        public TaskManager(TaskRepository taskRepository)
+        {
+            _taskRepository = taskRepository;
+        }
+
+        public void CreateTask(string title, string content, DateTime dueDate)
+        {
+            MyTask newTask = new MyTask(title, content, dueDate);
+            _taskRepository.AddTask(newTask);
+        }
     }
 
-    public void Update(string title, string content, DateTime dueDate)
+    public class TaskRepository
     {
-        Title = title;
-        Content = content;
-        DueDate = dueDate;
+ private List<MyTask> _tasks;
+
+        public TaskRepository()
+        {
+            _tasks = new List<MyTask>();
+        }
+        internal void AddTask(MyTask newTask)
+        {
+            _tasks.Add(newTask);
+            Console.WriteLine("Task added successfully!");
+        }
     }
 }

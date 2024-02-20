@@ -1,0 +1,16 @@
+@page
+@model CreateTaskModel
+
+<!-- Add form for creating a new task -->
+<form method="post">
+    <label>Title:</label>
+    <input type="text" asp-for="Title" />
+    <br />
+    <label>Content:</label>
+    <input type="text" asp-for="Content" />
+    <br />
+    <label>Due Date:</label>
+    <input type="date" asp-for="DueDate" />
+    <br>
+    <button type="submit">Create Task</button>
+</form>
