@@ -27,6 +27,11 @@ namespace WebMvc.Service
             var existingTask = tasks.Find(t => t.Id == id);
             existingTask.Update(title, content, dueDate);
         }
-
+        public List<MyTask> CreateTask(int id, string title, string content, DateTime dueDate)
+        {
+            var currentTasks = tasks;
+            currentTasks.Add(new MyTask(id, title, content, dueDate));
+            return currentTasks;
+        }
     }
 }

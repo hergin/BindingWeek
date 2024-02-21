@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebMvc.Models;
 using DomainModel;
 using WebMvc.Service;
+using Microsoft.VisualBasic;
 
 namespace WebMvc.Controllers;
 
@@ -52,6 +53,17 @@ public class HomeController : Controller
     {
         var theTask = taskService.FindTaskByID(id);
         return View(TaskViewModel.FromTask(theTask));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(int id, string title, string content, DateTime dueDate)
+    {
+        if (ModelState.IsValid)
+        {
+            taskService.CreateTask(id, title, content, dueDate);
+        }
+        return View();
     }
 
 }
