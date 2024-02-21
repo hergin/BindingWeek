@@ -48,10 +48,28 @@ public class HomeController : Controller
         }
     }
 
+    public IActionResult Create() {
+        return View(TaskCreationModel.createTask(taskService.getNextId()));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("Id,Title,Content,DueDate")] TaskCreationModel task) 
+    {
+        if(ModelState.IsValid)
+        {
+            taskService.createTask(task.Id, task.Title, task.Content, task.DueDate);
+            return RedirectToAction("ViewTask", new {id = task.Id});
+        }
+        else
+        {
+            return View(task);
+        }
+    }
+
     public IActionResult ViewTask([FromRoute] int id)
     {
         var theTask = taskService.FindTaskByID(id);
         return View(TaskViewModel.FromTask(theTask));
     }
-
 }
