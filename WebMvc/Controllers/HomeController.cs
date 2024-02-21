@@ -62,13 +62,13 @@ public class HomeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(int id, string title, string content, DateTime dueDate)
+    public IActionResult Create(string title, string content, DateTime dueDate)
     {
         if (ModelState.IsValid)
         {
-            taskService.CreateTask(id, title, content, dueDate);
+            taskService.CreateTask(title, content, dueDate);
         }
-        return View("Index");
+        return RedirectToAction("Index");
     }
 
 }
