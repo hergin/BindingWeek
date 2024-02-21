@@ -1,28 +1,29 @@
 ﻿@model IEnumerable<WebMvc.Models.TaskViewModel>
-@{
+    @{
     ViewData["Title"] = "My Todo List";
-}
-<h2>My Todo List</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DueDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    }
+    <h2>My Todo List</h2>
+    <a asp-action="Create">Create</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Content)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DueDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
         {
             <tr>
                 <td>
@@ -39,10 +40,10 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-action="ViewTask"
-                        asp-route-id="@item.Id">View</a>
+                                                                               asp-route-id="@item.Id">View</a>
                 </td>
 
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
