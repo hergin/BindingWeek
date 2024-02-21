@@ -40,7 +40,7 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
-            taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
+            await Task.Run(() => { taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);});
             return RedirectToAction("ViewTask", new { id = id });
         }
         else
@@ -59,7 +59,7 @@ public class HomeController : Controller
     {
         if(ModelState.IsValid)
         {
-            taskService.createTask(task.Id, task.Title, task.Content, task.DueDate);
+            await Task.Run(() => { taskService.createTask(task.Id, task.Title, task.Content, task.DueDate); });
             return RedirectToAction("ViewTask", new {id = task.Id});
         }
         else
