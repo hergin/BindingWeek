@@ -55,6 +55,11 @@ public class HomeController : Controller
         return View(TaskViewModel.FromTask(theTask));
     }
 
+    public IActionResult Create()
+    {
+        return View();
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(int id, string title, string content, DateTime dueDate)
@@ -63,7 +68,7 @@ public class HomeController : Controller
         {
             taskService.CreateTask(id, title, content, dueDate);
         }
-        return View();
+        return View("Index");
     }
 
 }
