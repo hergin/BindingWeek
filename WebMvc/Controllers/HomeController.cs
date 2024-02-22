@@ -22,6 +22,11 @@ public class HomeController : Controller
         return View(taskService.GetAllTasks().Select(t => TaskViewModel.FromTask(t)));
     }
 
+    public IActionResult Create()
+    {
+        return View();
+    }
+
     // GET: /HelloWorld/Edit/{id}
     public IActionResult Edit([FromRoute] int id)
     {
@@ -54,39 +59,22 @@ public class HomeController : Controller
         return View(TaskViewModel.FromTask(theTask));
     }
 
-    public class TaskController : Controller
+[HttpPost]
+public IActionResult Create(CreateTaskModel model)
 {
-    private readonly DomainModel.TaskManager _taskManager;
-
-    public TaskController(DomainModel.TaskManager taskManager)
+    if (ModelState.IsValid)
     {
-        _taskManager = taskManager;
+        var newTask = new MyTask(model.Title, model.Content, model.DueDate);
+
+        taskService.AddsTask(newTask); // Using the static instance of TaskService
+
+        return RedirectToAction("Index");
     }
-
-    // Action method for displaying the create page
-    public IActionResult Create()
+    else
     {
-        return View();
-    }
-
-    // Action method for handling task creation
-    [HttpPost]
-    public IActionResult Create(CreateTaskModel model)
-    {
-        if (ModelState.IsValid)
-        {
-            _taskManager.CreateTask(model.Title, model.Content, model.DueDate);
-            return RedirectToAction("Index", "Home"); // Redirect to index page after creation
-        }
         return View(model);
     }
 }
-
 }
 
-public class CreateTaskModel
-{
-    public string Content { get; internal set; }
-    public DateTime DueDate { get; internal set; }
-    public string Title { get; internal set; }
-}
+

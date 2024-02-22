@@ -28,5 +28,10 @@ namespace WebMvc.Service
             existingTask.Update(title, content, dueDate);
         }
 
+        internal void AddsTask(MyTask newTask)
+        {
+            tasks.Add(newTask);
+            Console.WriteLine("Task added successfully!");
+        }
     }
 }

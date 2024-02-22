@@ -30,6 +30,11 @@ public class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
 
+        app.MapControllerRoute(
+            name: "create",
+            pattern: "Home/Create",
+            defaults: new { controller = "Home", action = "Create" });
+
         app.Run();
     }
 }
