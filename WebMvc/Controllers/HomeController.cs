@@ -10,11 +10,12 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public static TaskService taskService = new TaskService();
+    public ITaskService taskService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ITaskService taskService)
     {
         _logger = logger;
+        this.taskService = taskService;
     }
 
     public IActionResult Index()
@@ -26,7 +27,9 @@ public class HomeController : Controller
     public IActionResult Edit([FromRoute] int id)
     {
         var theTask = taskService.FindTaskByID(id);
+#pragma warning disable CS8604 // Possible null reference argument.
         var taskEditModel = TaskEditModel.FromTask(theTask);
+#pragma warning restore CS8604 // Possible null reference argument.
         return View(taskEditModel);
     }
 
@@ -47,7 +50,9 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
+#pragma warning restore CS8604 // Possible null reference argument.
             return Task.FromResult<IActionResult>(RedirectToAction("ViewTask", new {id = id}));
         }
         else
@@ -59,7 +64,9 @@ public class HomeController : Controller
     public IActionResult ViewTask([FromRoute] int id)
     {
         var theTask = taskService.FindTaskByID(id);
+#pragma warning disable CS8604 // Possible null reference argument.
         return View(TaskViewModel.FromTask(theTask));
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 
     // POST: Blank/Create
