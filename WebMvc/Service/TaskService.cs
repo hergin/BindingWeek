@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DomainModel;
+
 namespace WebMvc.Service
 {
-    public class TaskService
+    public class TaskService : ITaskService
     {
         List<MyTask> tasks;
         public TaskService()
