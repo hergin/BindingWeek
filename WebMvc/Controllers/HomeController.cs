@@ -1,7 +1,7 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Linq;
 using WebMvc.Models;
-using DomainModel;
 using WebMvc.Service;
 
 namespace WebMvc.Controllers
@@ -9,23 +9,23 @@ namespace WebMvc.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly TaskService _taskService;
 
-        public static TaskService taskService = new TaskService();
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, TaskService taskService)
         {
             _logger = logger;
+            _taskService = taskService;
         }
 
         public IActionResult Index()
         {
-            return View(taskService.GetAllTasks().Select(t => TaskViewModel.FromTask(t)));
+            return View(_taskService.GetAllTasks().Select(t => TaskViewModel.FromTask(t)));
         }
 
         // GET: /HelloWorld/Edit/{id}
         public IActionResult Edit([FromRoute] int id)
         {
-            var theTask = taskService.FindTaskByID(id);
+            var theTask = _taskService.FindTaskByID(id);
             var taskEditModel = TaskEditModel.FromTask(theTask);
             return View(taskEditModel);
         }
@@ -35,11 +35,11 @@ namespace WebMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Title,Content,DueDate")] TaskEditModel task)
+        public IActionResult Edit(int id, [Bind("Title,Content,DueDate")] TaskEditModel task)
         {
             if (ModelState.IsValid)
             {
-                taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
+                _taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
                 return RedirectToAction("ViewTask", new { id = id });
             }
             else
@@ -50,7 +50,7 @@ namespace WebMvc.Controllers
 
         public IActionResult ViewTask([FromRoute] int id)
         {
-            var theTask = taskService.FindTaskByID(id);
+            var theTask = _taskService.FindTaskByID(id);
             return View(TaskViewModel.FromTask(theTask));
         }
 
@@ -65,7 +65,7 @@ namespace WebMvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                taskService.AddNewTask(task.Title, task.Content, task.DueDate);
+                _taskService.AddNewTask(task.Title, task.Content, task.DueDate);
                 return RedirectToAction("Index");
             }
             return View(task);
