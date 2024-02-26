@@ -10,11 +10,12 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public static TaskService taskService = new TaskService();
+    ITaskService taskService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ITaskService taskService)
     {
         _logger = logger;
+        this.taskService = taskService;
     }
 
     public IActionResult Index()
@@ -54,4 +55,19 @@ public class HomeController : Controller
         return View(TaskViewModel.FromTask(theTask));
     }
 
+    public IActionResult CreateTask([Bind("Title,Content,DueDate")] TaskCreateModel task)
+    {
+        if (ModelState.IsValid)
+            {
+                // Personally I would prefer to use something like GUID, but this works better for the current setup of the app
+                int newId = taskService.GetAllTasks().Max(t => t.Id) + 1;
+                var newTask = new MyTask(newId, task.Title, task.Content, task.DueDate);
+                taskService.AddTask(newTask);
+                return RedirectToAction("Index");
+            }
+            else 
+            {
+                return View(task);
+            } 
+    }
 }
