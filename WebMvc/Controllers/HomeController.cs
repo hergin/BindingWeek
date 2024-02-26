@@ -10,11 +10,14 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public static TaskService taskService = new TaskService();
+    //public static TaskService taskService = new TaskService();
+    
+    ITaskService taskService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ITaskService taskService)
     {
         _logger = logger;
+        this.taskService = taskService;
     }
 
     public IActionResult Index()
@@ -54,10 +57,6 @@ public class HomeController : Controller
         return View(TaskViewModel.FromTask(theTask));
     }
 
-    
-    
-    
-    
     
     // GET: /Home/Create
     public IActionResult Create()
