@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+using WebMvc.Service;
 namespace WebMvc;
 
 public class Program
@@ -8,6 +10,9 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+
+        builder.Services.AddSingleton<TaskService>();
+
 
         var app = builder.Build();
 

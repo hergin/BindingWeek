@@ -9,12 +9,14 @@ namespace WebMvc.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly TaskService _taskService;
 
     public static TaskService taskService = new TaskService();
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, TaskService taskService)
     {
         _logger = logger;
+        _taskService = taskService;
     }
 
     public IActionResult Index()
