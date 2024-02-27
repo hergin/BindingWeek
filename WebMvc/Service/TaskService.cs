@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DomainModel;
 namespace WebMvc.Service
 {
-    public class TaskService
+    public class TaskService : ITaskService
     {
         List<MyTask> tasks;
         public TaskService()
@@ -30,7 +30,7 @@ namespace WebMvc.Service
             var existingTask = tasks.Find(t => t.Id == id);
             existingTask.Update(title, content, dueDate);
         }
-        
+
         public int GetAmountOfTasks()
         {
             return tasks.Count();
@@ -40,7 +40,5 @@ namespace WebMvc.Service
         {
             tasks.Add(new MyTask(id, title, content, dueDate));
         }
-
-
     }
 }
