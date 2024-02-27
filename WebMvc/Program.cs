@@ -10,7 +10,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
         // builder.Services.AddScoped<TaskService>();
-        builder.Services.AddSingleton<TaskService>();
+        builder.Services.AddSingleton<ITaskService, TaskService>();
 
         var app = builder.Build();
 
