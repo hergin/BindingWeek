@@ -1,4 +1,5 @@
 namespace WebMvc;
+using WebMvc.Service;
 
 public class Program
 {
@@ -8,6 +9,8 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        // builder.Services.AddScoped<TaskService>();
+        builder.Services.AddSingleton<TaskService>();
 
         var app = builder.Build();
 
