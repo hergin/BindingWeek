@@ -10,11 +10,13 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public static TaskService taskService = new TaskService();
+    ITaskService taskService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ITaskService taskService)
     {
         _logger = logger;
+        this.taskService = taskService;
+
     }
 
     public IActionResult Index()
@@ -30,6 +32,12 @@ public class HomeController : Controller
         return View(taskEditModel);
     }
 
+    public IActionResult Create()
+    {
+        int size = taskService.getListLength();
+        var taskCreateModel = TaskCreateModel.NewTask(size);
+        return View(taskCreateModel);
+    }
     // POST: Movies/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -47,6 +55,22 @@ public class HomeController : Controller
             return View(task);
         }
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(int id, [Bind("Title,Content,DueDate")] TaskCreateModel task)
+    {
+        if (ModelState.IsValid)
+        {
+            taskService.AddNewTask(id, task.Title, task.Content, task.DueDate);
+            return RedirectToAction("ViewTask", new { id = id });
+        }
+        else
+        {
+            return View(task);
+        }
+    }
+
 
     public IActionResult ViewTask([FromRoute] int id)
     {
