@@ -6,7 +6,7 @@ using DomainModel;
 
 namespace WebMvc.Service
 {
-    public class TaskService
+    public class TaskService : ITaskService
     {
         List<MyTask> tasks;
 
@@ -24,12 +24,12 @@ namespace WebMvc.Service
             return tasks;
         }
 
-        public MyTask? FindTaskByID(int id)
+        public MyTask? FindTaskById(int id)
         {
             return tasks.Find(t => t.Id == id);
         }
 
-        public void UpdateTaskByID(int id, string title, string content, DateTime dueDate)
+        public void UpdateTaskById(int id, string title, string content, DateTime dueDate)
         {
             var existingTask = tasks.Find(t => t.Id == id);
             existingTask.Update(title, content, dueDate);
