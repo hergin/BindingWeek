@@ -12,10 +12,12 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
 
     public static TaskService taskService = new TaskService();
+    ITaskService iTaskService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ITaskService iTaskService)
     {
         _logger = logger;
+        this.iTaskService = iTaskService;
     }
 
     public IActionResult Index()
