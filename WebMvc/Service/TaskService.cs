@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DomainModel;
 namespace WebMvc.Service
 {
-    public class TaskService
+    public class TaskService : ITaskService
     {
         List<MyTask> tasks;
         public TaskService()
@@ -27,6 +27,12 @@ namespace WebMvc.Service
             var existingTask = tasks.Find(t => t.Id == id);
             existingTask.Update(title, content, dueDate);
         }
-
+        
+        public List<MyTask> CreateTask(string title, string content, DateTime dueDate)
+        {
+            int nextId = tasks.Count > 0 ? tasks.Max(t => t.Id) + 1 : 1;
+            tasks.Add(new MyTask(nextId, title, content, dueDate));
+            return tasks;
+        }
     }
 }

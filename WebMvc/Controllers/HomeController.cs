@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebMvc.Models;
 using DomainModel;
 using WebMvc.Service;
+using Microsoft.VisualBasic;
 
 namespace WebMvc.Controllers;
 
@@ -11,10 +12,12 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
 
     public static TaskService taskService = new TaskService();
+    ITaskService iTaskService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ITaskService iTaskService)
     {
         _logger = logger;
+        this.iTaskService = iTaskService;
     }
 
     public IActionResult Index()
@@ -52,6 +55,22 @@ public class HomeController : Controller
     {
         var theTask = taskService.FindTaskByID(id);
         return View(TaskViewModel.FromTask(theTask));
+    }
+
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(string title, string content, DateTime dueDate)
+    {
+        if (ModelState.IsValid)
+        {
+            taskService.CreateTask(title, content, dueDate);
+        }
+        return RedirectToAction("Index");
     }
 
 }
