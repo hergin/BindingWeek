@@ -67,7 +67,7 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
-            taskService.CreateNewTask(id, task.Title, task.Content, task.DueDate);
+            taskService.CreateNewTask(task.Id, task.Title, task.Content, task.DueDate);
             return Task.FromResult<IActionResult>(RedirectToAction("ViewTask", new { id = id }));
         }
         else
@@ -86,7 +86,4 @@ public class HomeController : Controller
 
         return View(); 
     }
-        
-    
-
 }
