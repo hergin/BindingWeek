@@ -1,32 +1,58 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DomainModel;
+using WebMvc.Data;
+
 namespace WebMvc.Service
 {
-    public class TaskService
+    public class TaskService : ITaskService
     {
-        List<MyTask> tasks;
-        public TaskService()
+        private readonly TaskDbContext _dbContext;
+
+        public TaskService(TaskDbContext dbContext)
         {
-            tasks = new List<MyTask>();
-            tasks.Add(new MyTask(1, "420 Assignment", "Complete the 420 Create Task assignment", DateTime.Now.AddDays(3)));
-            tasks.Add(new MyTask(2, "Spring Break", "Plan the spring break 24. Where to visit?", DateTime.Now.AddDays(10)));
-        }
-        public List<MyTask> GetAllTasks()
-        {
-            return tasks;
-        }
-        public MyTask? FindTaskByID(int id)
-        {
-            return tasks.Find(t => t.Id == id);
-        }
-        public void UpdateTaskByID(int id, string title, string content, DateTime dueDate)
-        {
-            var existingTask = tasks.Find(t => t.Id == id);
-            existingTask.Update(title, content, dueDate);
+            _dbContext = dbContext;
         }
 
+        public List<MyTask> GetAllTasks()
+        {
+            var tasks = _dbContext.Tasks.Select(t => new MyTask(t.Id, t.Title, t.Content, t.DueDate)).ToList();
+            return tasks;
+        }
+
+        public MyTask? FindTaskByID(int id)
+        {
+            var taskDataModel = _dbContext.Tasks.FirstOrDefault(t => t.Id == id);
+            if (taskDataModel != null)
+            {
+                return new MyTask(taskDataModel.Id, taskDataModel.Title, taskDataModel.Content, taskDataModel.DueDate);
+            }
+            return null;
+        }
+
+        public void UpdateTaskByID(int id, string title, string content, DateTime dueDate)
+        {
+            var existingTask = _dbContext.Tasks.FirstOrDefault(t => t.Id == id);
+            if (existingTask != null)
+            {
+                existingTask.Title = title;
+                existingTask.Content = content;
+                existingTask.DueDate = dueDate;
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public void CreateTask(string title, string content, DateTime dueDate)
+        {
+            var newTask = new DataModel
+            {
+                Title = title,
+                Content = content,
+                DueDate = dueDate
+            };
+            _dbContext.Tasks.Add(newTask);
+            _dbContext.SaveChanges();
+        }
     }
 }
