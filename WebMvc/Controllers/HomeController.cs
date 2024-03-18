@@ -51,7 +51,7 @@ public class HomeController : Controller
         if (ModelState.IsValid)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
+            taskService.UpdateTaskByID(task.Id, task.Title, task.Content, task.DueDate);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Task.FromResult<IActionResult>(RedirectToAction("ViewTask", new {id = id}));
         }
@@ -75,7 +75,7 @@ public class HomeController : Controller
     public Task<IActionResult> Create(int id, [Bind("Title,Content,DueDate")] TaskCreateModel task)
     {
         if (ModelState.IsValid) {
-            taskService.CreateNewTask(id, task.Title, task.Content, task.DueDate);
+            taskService.CreateNewTask(task.Id, task.Title, task.Content, task.DueDate);
             return Task.FromResult<IActionResult>(RedirectToAction("ViewTask", new { id = id }));
         } else {
             return Task.FromResult<IActionResult>(View(task));
