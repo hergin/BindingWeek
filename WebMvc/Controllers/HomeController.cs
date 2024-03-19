@@ -62,7 +62,7 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
-            _taskService.CreateTask(id, task.Title, task.Content, task.DueDate);
+            _taskService.CreateTask(task.Id, task.Title, task.Content, task.DueDate);
             return RedirectToAction("Index");
         }
         else

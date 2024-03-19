@@ -8,36 +8,48 @@ namespace WebMvc.Service
 {
     public class TaskService : ITaskService
     {
-        List<MyTask> tasks;
-
         public TaskService()
         {
-            tasks = new List<MyTask>();
-            tasks.Add(new MyTask(1, "420 Assignment", "Complete the 420 Create Task assignment",
-                DateTime.Now.AddDays(3)));
-            tasks.Add(new MyTask(2, "Spring Break", "Plan the spring break 24. Where to visit?",
-                DateTime.Now.AddDays(10)));
+            var taskDb = new TaskContext();
         }
 
         public List<MyTask> GetAllTasks()
         {
+            var taskDb = new TaskContext();
+            var tasks = taskDb.Tasks.Select(task => new MyTask(task.Id, task.Title, task.Content, task.DueDate))
+                .ToList();
+
             return tasks;
         }
 
         public MyTask? FindTaskById(int id)
         {
-            return tasks.Find(t => t.Id == id);
+            List<MyTask> tasks = GetAllTasks();
+            return tasks.Find(task => task.Id == id);
         }
 
         public void UpdateTaskById(int id, string title, string content, DateTime dueDate)
         {
-            var existingTask = tasks.Find(t => t.Id == id);
-            existingTask.Update(title, content, dueDate);
+            var db = new TaskContext();
+            List<MyTask> tasks = GetAllTasks();
+            var existingTask = db.Tasks.SingleOrDefault(task => task.Id == id);
+
+            if (existingTask != null)
+            {
+                existingTask.Title = title;
+                existingTask.Content = content;
+                existingTask.DueDate = dueDate;
+                db.SaveChanges();
+            }
+            
+            db.SaveChanges();
         }
-        
+
         public void CreateTask(int id, string title, string content, DateTime dueDate)
         {
-            tasks.Add(new MyTask(id, title, content, dueDate));
+            var db = new TaskContext();
+            db.Add(new TaskDataModel { Id = id, Title = title, Content = content, DueDate = dueDate });
+            db.SaveChanges();
         }
     }
 }
