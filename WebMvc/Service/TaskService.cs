@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DomainModel;
 namespace WebMvc.Service
 {
-    public class TaskService
+    public class TaskService : TaskServiceInterface
     {
         List<MyTask> tasks;
         public TaskService()
