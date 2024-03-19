@@ -13,10 +13,10 @@ namespace WebMvc.Data
                 serviceProvider.GetRequiredService<DbContextOptions<MyTaskContext>>()))
             {
                 // Skip seeding if data already exists
-                if (context.Tasks.Any())
-                {
-                    return; 
-                }
+                //if (context.Tasks.Any())
+                //{
+                   // return; 
+                //}
 
                 context.Tasks.AddRange(
                     new MyTaskModel

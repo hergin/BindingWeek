@@ -13,7 +13,7 @@ namespace WebMvc.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<MyTaskModel>().ToTable("Task");
+            modelBuilder.Entity<MyTaskModel>().ToTable("Tasks");
         }
 
     }

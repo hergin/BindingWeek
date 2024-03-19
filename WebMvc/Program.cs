@@ -24,6 +24,7 @@ public class Program
         using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
+            DbInitializer.Initialize(services);
             var dbContext = services.GetRequiredService<MyTaskContext>();
 
             // Apply pending migrations
