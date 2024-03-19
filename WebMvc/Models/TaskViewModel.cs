@@ -8,9 +8,9 @@ namespace WebMvc.Models
     public class TaskViewModel
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string? Title { get; set; }
         [Display(Name = "Task Content")]
-        public string Content { get; set; }
+        public string? Content { get; set; }
         [DataType(DataType.Date)]
         public DateTime DueDate { get; set; }
 

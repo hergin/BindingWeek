@@ -1,8 +1,14 @@
-﻿@model IEnumerable<WebMvc.Models.TaskViewModel>
+﻿
+@model IEnumerable<WebMvc.Models.TaskViewModel>
 @{
     ViewData["Title"] = "My Todo List";
 }
 <h2>My Todo List</h2>
+
+<div style="text-align: left;">
+    <a asp-controller="Home" asp-action="Create" style="margin-bottom: 10px; display: inline-block;">Create a New Task</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>

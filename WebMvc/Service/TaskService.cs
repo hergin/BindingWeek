@@ -1,32 +1,67 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DomainModel;
+using WebMvc.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace WebMvc.Service
 {
-    public class TaskService
+    public class TaskService : ITaskService
     {
-        List<MyTask> tasks;
-        public TaskService()
+        private readonly MyTaskContext _context;
+
+        public TaskService(MyTaskContext context)
         {
-            tasks = new List<MyTask>();
-            tasks.Add(new MyTask(1, "420 Assignment", "Complete the 420 Create Task assignment", DateTime.Now.AddDays(3)));
-            tasks.Add(new MyTask(2, "Spring Break", "Plan the spring break 24. Where to visit?", DateTime.Now.AddDays(10)));
-        }
-        public List<MyTask> GetAllTasks()
-        {
-            return tasks;
-        }
-        public MyTask? FindTaskByID(int id)
-        {
-            return tasks.Find(t => t.Id == id);
-        }
-        public void UpdateTaskByID(int id, string title, string content, DateTime dueDate)
-        {
-            var existingTask = tasks.Find(t => t.Id == id);
-            existingTask.Update(title, content, dueDate);
+            _context = context;
         }
 
+        public void AddTask(MyTask newTask)
+        {
+            var taskModel = new MyTaskModel
+            {
+                
+                Title = newTask.Title,
+                Content = newTask.Content,
+                DueDate = newTask.DueDate
+            };
+            _context.Tasks.Add(taskModel);
+            _context.SaveChanges();
+        }
+
+        public List<MyTask> GetAllTasks()
+        {
+            // Convert data model list to domain model list
+            return _context.Tasks
+                           .AsNoTracking()
+                           .Select(t => new MyTask(t.Id, t.Title!, t.Content!, t.DueDate))
+                           .ToList();
+        }
+
+        public MyTask? FindTaskByID(int id)
+        {
+            var taskModel = _context.Tasks.Find(id);
+            if (taskModel == null) return null;
+            return new MyTask(taskModel.Id, taskModel.Title!, taskModel.Content!, taskModel.DueDate);
+        }
+
+        public void UpdateTaskByID(int id, string title, string content, DateTime dueDate)
+        {
+            var taskModel = _context.Tasks.Find(id);
+            if (taskModel != null)
+            {
+                taskModel.Title = title;
+                taskModel.Content = content;
+                taskModel.DueDate = dueDate;
+                _context.SaveChanges();
+            }
+        }
+
+        public void DeleteTaskByID(int id)
+        {
+            var taskModel = _context.Tasks.Find(id);
+            if (taskModel != null)
+            {
+                _context.Tasks.Remove(taskModel);
+                _context.SaveChanges();
+            }
+        }
     }
 }
