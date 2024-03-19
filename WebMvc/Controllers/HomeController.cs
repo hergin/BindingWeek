@@ -12,7 +12,7 @@ public class HomeController : Controller
 
     TaskServiceInterface taskService;
 
-    public HomeController(ILogger<HomeController> logger, TaskService taskService)
+    public HomeController(ILogger<HomeController> logger, TaskServiceInterface taskService)
     {
         _logger = logger;
         this.taskService = taskService;
