@@ -10,11 +10,12 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public static TaskService taskService = new TaskService();
+    private ITaskService taskService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ITaskService taskService)
     {
         _logger = logger;
+        this.taskService = taskService;
     }
 
     public IActionResult Index()
@@ -39,8 +40,27 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
-            taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
+            await Task.Run(() => { taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);});
             return RedirectToAction("ViewTask", new { id = id });
+        }
+        else
+        {
+            return View(task);
+        }
+    }
+
+    public IActionResult Create() {
+        return View(TaskCreationModel.createTask(taskService.getNextId()));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("Id,Title,Content,DueDate")] TaskCreationModel task) 
+    {
+        if(ModelState.IsValid)
+        {
+            await Task.Run(() => { taskService.createTask(task.Id, task.Title, task.Content, task.DueDate); });
+            return RedirectToAction("ViewTask", new {id = task.Id});
         }
         else
         {
@@ -53,5 +73,4 @@ public class HomeController : Controller
         var theTask = taskService.FindTaskByID(id);
         return View(TaskViewModel.FromTask(theTask));
     }
-
 }

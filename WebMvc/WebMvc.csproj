@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DomainModel\DomainModel.csproj" />
+    <ProjectReference Include="..\ConsoleEF\ConsoleEF.csproj" />
+    <ProjectReference Include="..\Database\Database.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

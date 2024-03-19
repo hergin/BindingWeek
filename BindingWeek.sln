@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainModel", "DomainModel\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebMvc", "WebMvc\WebMvc.csproj", "{269B8E81-C4AC-4880-B094-0556B0677FEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{2AA46086-5B5E-4888-AD7F-89B7DF486743}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{269B8E81-C4AC-4880-B094-0556B0677FEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{269B8E81-C4AC-4880-B094-0556B0677FEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{269B8E81-C4AC-4880-B094-0556B0677FEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AA46086-5B5E-4888-AD7F-89B7DF486743}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AA46086-5B5E-4888-AD7F-89B7DF486743}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AA46086-5B5E-4888-AD7F-89B7DF486743}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AA46086-5B5E-4888-AD7F-89B7DF486743}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
