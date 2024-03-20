@@ -1,31 +1,57 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DomainModel;
+using Microsoft.VisualBasic;
+using WebMvc.Database;
 namespace WebMvc.Service
 {
-    public class TaskService
+    public class TaskService : TaskServiceInterface
     {
-        List<MyTask> tasks;
-        public TaskService()
+        private readonly TaskDb _taskDb;
+
+        public TaskService(TaskDb taskDb)
         {
-            tasks = new List<MyTask>();
-            tasks.Add(new MyTask(1, "420 Assignment", "Complete the 420 Create Task assignment", DateTime.Now.AddDays(3)));
-            tasks.Add(new MyTask(2, "Spring Break", "Plan the spring break 24. Where to visit?", DateTime.Now.AddDays(10)));
+            _taskDb = taskDb;
         }
         public List<MyTask> GetAllTasks()
         {
-            return tasks;
+
+            var taskList = _taskDb.Task.Select(t => new MyTask(t.Id, t.Title, t.Content, t.DueDate)).ToList();
+            return taskList;
         }
         public MyTask? FindTaskByID(int id)
         {
-            return tasks.Find(t => t.Id == id);
+            var task = _taskDb.Task.FirstOrDefault(t => t.Id == id);
+            if (task != null)
+            {
+                return new MyTask(task.Id, task.Title, task.Content, task.DueDate);
+            }
+            return null;
         }
         public void UpdateTaskByID(int id, string title, string content, DateTime dueDate)
         {
-            var existingTask = tasks.Find(t => t.Id == id);
-            existingTask.Update(title, content, dueDate);
+            var task = _taskDb.Task.FirstOrDefault(t => t.Id == id);
+            if (task != null)
+            {
+                task.Title = title;
+                task.Content = content;
+                task.DueDate = dueDate;
+                _taskDb.SaveChanges();
+
+            }
+        }
+
+        public void CreateTask(string title, string content, DateTime duedate)
+        {
+            var newTask = new Database.Task
+            {
+                Title = title,
+                Content = content,
+                DueDate = duedate
+            };
+            _taskDb.Task.Add(newTask);
+            _taskDb.SaveChanges();
         }
 
     }

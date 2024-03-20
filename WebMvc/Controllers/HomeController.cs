@@ -10,22 +10,23 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public static TaskService taskService = new TaskService();
+    TaskServiceInterface taskService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, TaskServiceInterface taskService)
     {
         _logger = logger;
+        this.taskService = taskService;
     }
 
     public IActionResult Index()
     {
-        return View(taskService.GetAllTasks().Select(t => TaskViewModel.FromTask(t)));
+        return View(this.taskService.GetAllTasks().Select(t => TaskViewModel.FromTask(t)));
     }
 
     // GET: /HelloWorld/Edit/{id}
     public IActionResult Edit([FromRoute] int id)
     {
-        var theTask = taskService.FindTaskByID(id);
+        var theTask = this.taskService.FindTaskByID(id);
         var taskEditModel = TaskEditModel.FromTask(theTask);
         return View(taskEditModel);
     }
@@ -39,7 +40,7 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
-            taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
+            this.taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
             return RedirectToAction("ViewTask", new { id = id });
         }
         else
@@ -50,8 +51,29 @@ public class HomeController : Controller
 
     public IActionResult ViewTask([FromRoute] int id)
     {
-        var theTask = taskService.FindTaskByID(id);
+        var theTask = this.taskService.FindTaskByID(id);
         return View(TaskViewModel.FromTask(theTask));
+    }
+
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("Title,Content,DueDate")] TaskCreateModel task)
+    {
+        if (ModelState.IsValid)
+        {
+            this.taskService.CreateTask(task.Title, task.Content, task.DueDate);
+            return RedirectToAction("Index");
+        }
+        else
+        {
+            return View();
+        }
     }
 
 }
