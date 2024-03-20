@@ -1,3 +1,11 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using WebMvc.Service;
+using WebMvc.Database;
+using Microsoft.Extensions.Options;
 namespace WebMvc;
 
 public class Program
@@ -8,6 +16,12 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+
+
+        builder.Services.AddDbContext<TaskDb>(Options => Options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+        builder.Services.AddScoped<TaskServiceInterface, TaskService>();
 
         var app = builder.Build();
 
