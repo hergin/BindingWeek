@@ -3,43 +3,48 @@ using Microsoft.AspNetCore.Mvc;
 using WebMvc.Models;
 using DomainModel;
 using WebMvc.Service;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebMvc.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly ITaskService _taskService;
     private readonly ILogger<HomeController> _logger;
 
-    public static TaskService taskService = new TaskService();
-
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ITaskService taskService)
     {
         _logger = logger;
+        _taskService = taskService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View(taskService.GetAllTasks().Select(t => TaskViewModel.FromTask(t)));
+        var tasks = await _taskService.GetAllTasksAsync();
+        var taskViewModels = tasks.Select(t => TaskViewModel.FromTask(t)).ToList();
+        return View(taskViewModels);
     }
 
     // GET: /HelloWorld/Edit/{id}
-    public IActionResult Edit([FromRoute] int id)
+    public async Task<IActionResult> Edit([FromRoute] int id)
     {
-        var theTask = taskService.FindTaskByID(id);
+        var theTask = await _taskService.FindTaskByIDAsync(id);
+        if (theTask == null)
+        {
+            return NotFound();
+        }
         var taskEditModel = TaskEditModel.FromTask(theTask);
         return View(taskEditModel);
     }
 
-    // POST: Movies/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Title,Content,DueDate")] TaskEditModel task)
     {
         if (ModelState.IsValid)
         {
-            taskService.UpdateTaskByID(id, task.Title, task.Content, task.DueDate);
+            await _taskService.UpdateTaskByIDAsync(id, task.Title, task.Content, task.DueDate);
             return RedirectToAction("ViewTask", new { id = id });
         }
         else
@@ -48,10 +53,30 @@ public class HomeController : Controller
         }
     }
 
-    public IActionResult ViewTask([FromRoute] int id)
+    public async Task<IActionResult> ViewTask([FromRoute] int id)
     {
-        var theTask = taskService.FindTaskByID(id);
+        var theTask = await _taskService.FindTaskByIDAsync(id);
+        if (theTask == null)
+        {
+            return NotFound();
+        }
         return View(TaskViewModel.FromTask(theTask));
     }
 
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("Title,Content,DueDate")] TaskEditModel taskEditModel)
+    {
+        if (ModelState.IsValid)
+        {
+            await _taskService.CreateTaskAsync(taskEditModel);
+            return RedirectToAction(nameof(Index));
+        }
+        return View(taskEditModel);
+    }
 }

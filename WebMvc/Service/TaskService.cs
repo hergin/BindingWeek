@@ -2,31 +2,65 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using WebMvc.Models;
+using WebMvc.Data;
 using DomainModel;
+
 namespace WebMvc.Service
 {
-    public class TaskService
+    public interface ITaskService
     {
-        List<MyTask> tasks;
-        public TaskService()
+        Task<List<MyTask>> GetAllTasksAsync();
+        Task<MyTask?> FindTaskByIDAsync(int id);
+        Task UpdateTaskByIDAsync(int id, string title, string content, DateTime dueDate);
+        Task CreateTaskAsync(TaskEditModel model);
+    }
+
+    public class TaskService : ITaskService
+    {
+        private readonly ApplicationDbContext _context;
+
+        public TaskService(ApplicationDbContext context)
         {
-            tasks = new List<MyTask>();
-            tasks.Add(new MyTask(1, "420 Assignment", "Complete the 420 Create Task assignment", DateTime.Now.AddDays(3)));
-            tasks.Add(new MyTask(2, "Spring Break", "Plan the spring break 24. Where to visit?", DateTime.Now.AddDays(10)));
-        }
-        public List<MyTask> GetAllTasks()
-        {
-            return tasks;
-        }
-        public MyTask? FindTaskByID(int id)
-        {
-            return tasks.Find(t => t.Id == id);
-        }
-        public void UpdateTaskByID(int id, string title, string content, DateTime dueDate)
-        {
-            var existingTask = tasks.Find(t => t.Id == id);
-            existingTask.Update(title, content, dueDate);
+            _context = context;
         }
 
+        public async Task<List<MyTask>> GetAllTasksAsync()
+        {
+            return await _context.Tasks
+                .Select(t => new MyTask(t.Id, t.Title, t.Content, t.DueDate))
+                .ToListAsync();
+        }
+
+        public async Task<MyTask?> FindTaskByIDAsync(int id)
+        {
+            var taskEntity = await _context.Tasks.FindAsync(id);
+            return taskEntity != null ? new MyTask(taskEntity.Id, taskEntity.Title, taskEntity.Content, taskEntity.DueDate) : null;
+        }
+
+        public async Task UpdateTaskByIDAsync(int id, string title, string content, DateTime dueDate)
+        {
+            var taskEntity = await _context.Tasks.FindAsync(id);
+            if (taskEntity != null)
+            {
+                taskEntity.Title = title;
+                taskEntity.Content = content;
+                taskEntity.DueDate = dueDate;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task CreateTaskAsync(TaskEditModel model)
+        {
+            var taskEntity = new TaskEntity
+            {
+                Title = model.Title,
+                Content = model.Content,
+                DueDate = model.DueDate
+            };
+            _context.Tasks.Add(taskEntity);
+            await _context.SaveChangesAsync();
+        }
     }
 }
