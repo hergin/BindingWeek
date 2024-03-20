@@ -1,5 +1,7 @@
 namespace WebMvc;
 using WebMvc.Service;
+using Microsoft.EntityFrameworkCore;
+using WebMvc.Data;
 
 public class Program
 {
@@ -9,8 +11,12 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-        // builder.Services.AddScoped<TaskService>();
-        builder.Services.AddSingleton<ITaskService, TaskService>();
+
+        // Configure Entity Framework Core with SQLite
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+       builder.Services.AddScoped<ITaskService, TaskService>();
 
         var app = builder.Build();
 
@@ -18,7 +24,6 @@ public class Program
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
