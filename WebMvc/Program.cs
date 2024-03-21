@@ -1,4 +1,5 @@
 using WebMvc.Service;
+using Microsoft.EntityFrameworkCore;
 namespace WebMvc;
 
 public class Program
@@ -7,10 +8,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        using var db = new TaskDbContext();
+        db.Add(new Infomation {Id = 0, Title = " ", Content = " ", dueDate = DateTime.Now});
+        db.SaveChanges();
+
         // Add services to the container.
         builder.Services.AddControllersWithViews();
         builder.Services.AddSingleton<ITaskService, TaskService>();
-
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
