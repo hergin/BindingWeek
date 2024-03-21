@@ -9,12 +9,12 @@ namespace WebMvc.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    ITaskService taskService;
 
-    public static TaskService taskService = new TaskService();
-
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ITaskService taskService)
     {
         _logger = logger;
+        this.taskService = taskService;
     }
 
     public IActionResult Index()
@@ -54,4 +54,23 @@ public class HomeController : Controller
         return View(TaskViewModel.FromTask(theTask));
     }
 
+    public IActionResult Create([FromRoute] int id)
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(int id, [Bind("Title,Content,DueDate")] TaskCreateModel task)
+    {
+        if (ModelState.IsValid)
+        {
+            taskService.CreateTask(id, task.Title, task.Content, task.DueDate);
+            return RedirectToAction("ViewTask", new { id = id });
+        }
+        else
+        {
+            return View(task);
+        }
+    }
 }
