@@ -1,38 +1,23 @@
-using WebMvc.Service;
-namespace WebMvc;
+using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
-public class Program
-{
-    public static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+using var db = new TaskContext();
 
-        // Add services to the container.
-        builder.Services.AddControllersWithViews();
-        builder.Services.AddSingleton<ITaskService, TaskService>();
+Console.WriteLine($"Database path: {db.DbPath}");
 
+//Create
+Console.WriteLine("Inserting new task");
+db.Add(new Task{id = 3, title = "Data Persistence", content = "Complete the 420 Assignment", dueDate = DateTime.Now.AddDays(15)});
+db.SaveChanges();
 
-        var app = builder.Build();
+//View
+Console.WriteLine("Viewing all tasks");
+var task = db.Tasks
+.OrderBy(b => b.id)
+.First();
 
-        // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
-        {
-            app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
-        }
-
-        app.UseHttpsRedirection();
-        app.UseStaticFiles();
-
-        app.UseRouting();
-
-        app.UseAuthorization();
-
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
-
-        app.Run();
-    }
-}
+//Delete
+Console.WriteLine("Deleting task");
+db.Remove(task);
+db.SaveChanges();
