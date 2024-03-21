@@ -5,9 +5,9 @@ namespace WebMvc.Service
 {
     public class TaskService : ITaskService
     {
-        private readonly TaskContext _context;
+        private readonly MyTaskContext _context;
 
-        public TaskService(TaskContext context)
+        public TaskService(MyTaskContext context)
         {
             _context = context;
         }

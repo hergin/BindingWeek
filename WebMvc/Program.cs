@@ -11,7 +11,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<ITaskService, TaskService>();
-        builder.Services.AddDbContext<TaskContext>();
+        builder.Services.AddDbContext<MyTaskContext>();
 
         var app = builder.Build();
 
