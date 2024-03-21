@@ -10,7 +10,7 @@
 
         public MyTask(int id, string title, string content)
         {
-            Id = id; // Assign the provided ID
+            Id = id; 
             Title = title;
             Content = content;
         }
@@ -74,7 +74,3 @@
         public DateTime DueDate { get; set; }
     }
 }
-
-
-
-

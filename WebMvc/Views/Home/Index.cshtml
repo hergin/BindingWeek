@@ -42,10 +42,15 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-action="ViewTask"
-                        asp-route-id="@item.Id">View</a>
+                    asp-route-id="@item.Id">View</a> | <form asp-action="DeleteTask" method="post" style="display:inline;">
+                <input type="hidden" name="id" value="@item.Id" />
+                <button type="submit">Delete</button>
+            </form>
                 </td>
-
             </tr>
         }
+    </div>
+}
+
     </tbody>
 </table>
