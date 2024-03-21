@@ -58,16 +58,28 @@ public class HomeController : Controller
     public IActionResult CreateTask([Bind("Title,Content,DueDate")] TaskCreateModel task)
     {
         if (ModelState.IsValid)
+        {
+            // Personally I would prefer to use something like GUID, but this works better for the current setup of the app
+            var allTasks = taskService.GetAllTasks();
+            int newId;
+            // Check if there are any tasks.
+            // If yes, assign the id of the last task + 1
+            if (allTasks.Any())
             {
-                // Personally I would prefer to use something like GUID, but this works better for the current setup of the app
-                int newId = taskService.GetAllTasks().Max(t => t.Id) + 1;
-                var newTask = new MyTask(newId, task.Title, task.Content, task.DueDate);
-                taskService.AddTask(newTask);
-                return RedirectToAction("Index");
+                newId = allTasks.Max(t => t.Id) + 1;
             }
-            else 
+            // If no, assign id of 1
+            else
             {
-                return View(task);
-            } 
+                newId = 1;
+            }
+            var newTask = new MyTask(newId, task.Title, task.Content, task.DueDate);
+            taskService.AddTask(newTask);
+            return RedirectToAction("Index");
+        }
+        else
+        {
+            return View(task);
+        }
     }
 }

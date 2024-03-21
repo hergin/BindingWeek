@@ -1,34 +1,41 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DomainModel;
-namespace WebMvc.Service;
+using System.Linq;
+
+namespace WebMvc.Service
+{
     public class TaskService : ITaskService
     {
-        List<MyTask> tasks;
-        public TaskService()
+        private readonly TaskContext _context;
+
+        public TaskService(TaskContext context)
         {
-            tasks = new List<MyTask>();
-            tasks.Add(new MyTask(1, "420 Assignment", "Complete the 420 Create Task assignment", DateTime.Now.AddDays(3)));
-            tasks.Add(new MyTask(2, "Spring Break", "Plan the spring break 24. Where to visit?", DateTime.Now.AddDays(10)));
+            _context = context;
         }
+
         public List<MyTask> GetAllTasks()
         {
-            return tasks;
+            return _context.Tasks.ToList();
         }
+
         public MyTask? FindTaskByID(int id)
         {
-            return tasks.Find(t => t.Id == id);
+            return _context.Tasks.Find(id);
         }
+
         public void UpdateTaskByID(int id, string title, string content, DateTime dueDate)
         {
-            var existingTask = tasks.Find(t => t.Id == id);
-            existingTask.Update(title, content, dueDate);
+            var existingTask = _context.Tasks.Find(id);
+            if (existingTask != null)
+            {
+                existingTask.Update(title, content, dueDate);
+                _context.SaveChanges();
+            }
         }
 
         public void AddTask(MyTask task)
         {
-            tasks.Add(task);
+            _context.Tasks.Add(task);
+            _context.SaveChanges();
         }
     }
+}

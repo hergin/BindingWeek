@@ -2,7 +2,7 @@
 
 public class MyTask
 {
-    public int Id { get; }
+    public int Id { get; private set; }
     public string Title { get; private set; }
     public string Content { get; private set; }
     public DateTime DueDate { get; private set; }
